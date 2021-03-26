@@ -1,0 +1,55 @@
+{
+    "variables": {
+        "az_client_secret": "{{env `AZ_PERSONAL_SCRT`}}",
+        "az_subscription_id": "{{env `AZ_PERSONAL_SUBS`}}",
+        "az_client_id": "{{env `AZ_PERSONAL_CLID`}}",
+        "az_tenant_id": "{{env `AZ_PERSONAL_TNID`}}",
+        "resourcegroup": "insert a resource group"
+    },
+    "builders": [
+        {
+            "type": "azure-arm",
+ 
+            "client_id": "{{user `az_client_id`}}",
+            "client_secret": "{{user `az_client_secret`}}",
+            "tenant_id": "{{user `az_tenant_id`}}",
+            "subscription_id": "{{user `az_subscription_id`}}",
+ 
+            "os_type": "Linux",
+            "os_disk_size_gb": "65",
+            "disk_additional_size": "256",
+            "image_publisher": "RedHat",
+            "image_offer": "RHEL",
+            "image_sku": "7.7",
+            "managed_image_name": "EXAMPLE_NAME",
+            "managed_image_resource_group_name": "{{user `resourcegroup`}}",
+            "build_resource_group_name": "{{user `resourcegroup`}}",
+ 
+            "virtual_network_name": "existing vnet",
+            "virtual_network_subnet_name": "existing subnet",
+            "virtual_network_resource_group_name": "vnet resource group != image resource group",
+ 
+            "azure_tags": {
+                "ENV": "qa",
+                "application": "publisher",
+                "image": "name"
+            },
+ 
+            "vm_size": "Standard_E2_v3",
+            "custom_resource_build_prefix": "temporal",
+ 
+            "communicator": "ssh",
+            "ssh_timeout": "1m"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "ansible",
+            "playbook_file": "./playbook.yml",
+            "use_proxy": false,
+            "extra_arguments": [
+                "--vault-password-file=vault-pass.txt"
+            ]
+        }
+    ]
+}
