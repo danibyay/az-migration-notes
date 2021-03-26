@@ -37,6 +37,7 @@ It will be encrypted with a password of your choice.
 
 > sudo openssl pkcs12 -export -out example.pfx -inkey internal,key -in internal.crt
 
+
 If you already have a PFX and want to see the inside, use this:
 
 > sudo openssl pkcs12 -info -in whatever.pfx -notes

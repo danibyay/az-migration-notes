@@ -27,3 +27,15 @@ The provider file should look like this
         features {}
         skip_provider_registration = true
     }
+
+Jenkins path of where the pipeline is run
+
+> /var/lib/jenkins/workspace/pipeline_name_branch
+
+## Caveats
+
+The terraform pipeline relies on having dependencies ansible repos cloned. Using a null_resource and local provisioner I call a script that clones the repos.
+
+That only needs to be done once, not every pipeline build, that's why the null_resource acting as an "existing" resource is very helpful.
+
+However, when starting a new workspace in Jenkins, Jenkins doesn't have the cloned repos, so the trick is to taint the null_resource, so when Jenkins does a plan, realizes that it needs to build the *null_resource* and clone the repos in its own workspace.
